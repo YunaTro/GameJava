@@ -21,8 +21,7 @@ public class Weapon implements Attack {
 
     public void attack_check() {
         for (int i = 0; i < bullets.size(); ++i) {
-            if (bullets.get(i).x < enemy.x + enemy.image.getWidth(null) / 2 && bullets.get(i).x > enemy.x - enemy.image.getWidth(null) / 2 &&
-                    bullets.get(i).y < enemy.y + enemy.image.getHeight(null) / 2 && bullets.get(i).y > enemy.y - enemy.image.getHeight(null) / 2) {
+            if (enemy.intersection(bullets.get(i).x, bullets.get(i).y, 10, 10)) {
                 enemy.setHP(enemy.getHP() - bullets.get(i).damage);
                 bullets.remove(i);
                 System.out.println(enemy.getHP());

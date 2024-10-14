@@ -30,11 +30,30 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
 
         setFocusable(true);
+        addKeyListener(this);
+        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        g.setColor(Color.BLACK); // Устанавливаем цвет текста
+        g.setFont(new Font("Arial", Font.BOLD, 18)); // Устанавливаем шрифт текста
+        g.drawString("P1: "+ orc.getHP() + " vs P2: " + orc2.getHP(), 40, 40);
+        if (orc.getHP() <= 0) {
+            g.setColor(Color.RED); // Устанавливаем цвет текста
+            g.setFont(new Font("Arial", Font.BOLD, 96)); // Устанавливаем шрифт текста
+            g.drawString("P2 WINS", 200, 200);
+            timer.stop();
+        }
+        if (orc2.getHP() <= 0) {
+            g.setColor(Color.RED); // Устанавливаем цвет текста
+            g.setFont(new Font("Arial", Font.BOLD, 96)); // Устанавливаем шрифт текста
+            g.drawString("P1 WINS", 200, 200);
+            timer.stop();
+        }
+
         orc.draw(g);
         orc2.draw(g);
     }
