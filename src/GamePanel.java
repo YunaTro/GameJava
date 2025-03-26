@@ -7,10 +7,14 @@ import java.awt.event.KeyListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
-    public Ship orc;
-    public Ship orc2;
+    public Ship ship;
+    public Ship ship1;
     public Timer timer;
 
     public GamePanel() {
@@ -18,14 +22,22 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         timer.start();
 
         try {
-            Image image = ImageIO.read(new File("C:\\Users\\xiaom\\Downloads\\Telegram Desktop\\untitled2 (2)\\GameJava\\src\\orc.png"));
-            orc = new Ship(50, 50, 10, 0, image, new Weapon(), 2);
-            Image image2 = ImageIO.read(new File("C:\\Users\\xiaom\\Downloads\\Telegram Desktop\\untitled2 (2)\\GameJava\\src\\orc2.png"));
-            orc2 = new Ship(200, 200, 10, 0, image2, new Weapon(), 2);
-            orc.weapon.setEnemy(orc2);
-            orc2.weapon.setEnemy(orc);
+            InputStream is = Main.class.getResourceAsStream("/ship.png");
+            if (is == null) {
+                throw new IOException("Image not found");
+            }
+            Image image = ImageIO.read(is);
+            InputStream is2 = Main.class.getResourceAsStream("/ship1.png");
+            if (is2 == null) {
+                throw new IOException("Image not found");
+            }
+            Image image2 = ImageIO.read(is2);
+            ship = new Ship(50, 200, 10, 0, image, new Weapon(), 10);
+            ship1 = new Ship(300, 200, 10, 0, image2, new Weapon(), 10);
+            ship.weapon.setEnemy(ship1);
+            ship1.weapon.setEnemy(ship);
         } catch (IOException e) {
-            System.out.println("Облом.");
+            System.out.println("Image not found");
             throw new RuntimeException(e);
         }
 
@@ -40,72 +52,73 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         g.setColor(Color.BLACK); // Устанавливаем цвет текста
         g.setFont(new Font("Arial", Font.BOLD, 18)); // Устанавливаем шрифт текста
-        g.drawString("P1: "+ orc.getHP() + " vs P2: " + orc2.getHP(), 40, 40);
-        if (orc.getHP() <= 0) {
+        g.drawString("Player1: "+ ship.getHP() + " HP vs Player2: " + ship1.getHP() + " HP", 40, 40);
+        if (ship.getHP() <= 0) {
             g.setColor(Color.RED); // Устанавливаем цвет текста
-            g.setFont(new Font("Arial", Font.BOLD, 96)); // Устанавливаем шрифт текста
-            g.drawString("P2 WINS", 200, 200);
+            g.setFont(new Font("Arial", Font.BOLD, 48)); // Устанавливаем шрифт текста
+            g.drawString("Player2 WINS", 100, 200);
             timer.stop();
         }
-        if (orc2.getHP() <= 0) {
+        if (ship1.getHP() <= 0) {
             g.setColor(Color.RED); // Устанавливаем цвет текста
-            g.setFont(new Font("Arial", Font.BOLD, 96)); // Устанавливаем шрифт текста
-            g.drawString("P1 WINS", 200, 200);
+            g.setFont(new Font("Arial", Font.BOLD, 48)); // Устанавливаем шрифт текста
+            g.drawString("Player1 WINS", 100, 200);
             timer.stop();
         }
 
-        orc.draw(g);
-        orc2.draw(g);
+        ship.draw(g);
+        ship1.draw(g);
     }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.println(e.getKeyCode());
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            orc.direction.up = true;
+            ship.direction.up = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            orc.direction.down = true;
+            ship.direction.down = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            orc.direction.right = true;
+            ship.direction.right = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            orc.direction.left = true;
+            ship.direction.left = true;
         }
         if (e.getKeyCode() == 87) {
-            orc2.direction.up = true;
+            ship1.direction.up = true;
         }
         if (e.getKeyCode() == 83) {
-            orc2.direction.down = true;
+            ship1.direction.down = true;
         }
         if (e.getKeyCode() == 68) {
-            orc2.direction.right = true;
+            ship1.direction.right = true;
         }
         if (e.getKeyCode() == 65) {
-            orc2.direction.left = true;
+            ship1.direction.left = true;
         }
 
         if(e.getKeyCode() == 17)
         {
-            int x = orc.x + orc.image.getWidth(null) / 2;
-            int y = orc.y + orc.image.getHeight(null) / 2;
-            double angle = orc.angle;
+            int x = ship.x + ship.image.getWidth(null) / 2;
+            int y = ship.y + ship.image.getHeight(null) / 2;
+            double angle = ship.angle;
 
-            orc.weapon.bullets.add(new Bullet(x, y, 10, angle, null, 1));
+            ship.weapon.bullets.add(new Bullet(x, y, 10, angle, null, 1));
         }
 
         if(e.getKeyCode() == 32)
         {
-            int x = orc2.x + orc2.image.getWidth(null) / 2;
-            int y = orc2.y + orc2.image.getHeight(null) / 2;
-            double angle = orc2.angle;
+            int x = ship1.x + ship1.image.getWidth(null) / 2;
+            int y = ship1.y + ship1.image.getHeight(null) / 2;
+            double angle = ship1.angle;
 
-            orc2.weapon.bullets.add(new Bullet(x, y, 10, angle, null, 1));
+            ship1.weapon.bullets.add(new Bullet(x, y, 10, angle, null, 1));
         }
 
     }
@@ -113,38 +126,38 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            orc.direction.up = false;
+            ship.direction.up = false;
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            orc.direction.down = false;
+            ship.direction.down = false;
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            orc.direction.right = false;
+            ship.direction.right = false;
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            orc.direction.left = false;
+            ship.direction.left = false;
         }
         if (e.getKeyCode() == 87) {
-            orc2.direction.up = false;
+            ship1.direction.up = false;
         }
         if (e.getKeyCode() == 83) {
-            orc2.direction.down = false;
+            ship1.direction.down = false;
         }
         if (e.getKeyCode() == 68) {
-            orc2.direction.right = false;
+            ship1.direction.right = false;
         }
         if (e.getKeyCode() == 65) {
-            orc2.direction.left = false;
+            ship1.direction.left = false;
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (orc != null) {
-            orc.move();
+        if (ship != null) {
+            ship.move();
         }
-        if (orc2 != null) {
-            orc2.move();
+        if (ship1 != null) {
+            ship1.move();
         }
         repaint();
     }

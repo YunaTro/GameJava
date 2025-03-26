@@ -24,7 +24,6 @@ public class Weapon implements Attack {
             if (enemy.intersection(bullets.get(i).x, bullets.get(i).y, 10, 10)) {
                 enemy.setHP(enemy.getHP() - bullets.get(i).damage);
                 bullets.remove(i);
-                System.out.println(enemy.getHP());
 
                 attack_check();
                 return;
